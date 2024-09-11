@@ -1,4 +1,4 @@
-const { select } = require('@inquirer/prompts'); // Criar prompts interativos
+const { select } = require("@inquirer/prompts"); // Criar prompts interativos
 
 const start = async () => {
   while (true) {
@@ -7,15 +7,22 @@ const start = async () => {
       choices: [
         {
           name: "Cadastrar meta",
-          value: "cadastrar"
+          value: "cadastrar",
         },
         {
           name: "Sair",
-          value: "sair"
-        }
-      ]
+          value: "sair",
+        },
+      ],
     });
+    switch (opcao) {
+      case "cadastrar":
+        console.log("Vamos cadastrar uma meta");
+        break;
+      case "sair":
+        return;
+    }
   }
-}
+};
 
 start();
