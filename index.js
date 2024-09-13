@@ -1,15 +1,18 @@
 const { select, input, checkbox } = require("@inquirer/prompts"); // Criar prompts interativos
 
+let mensagem = "Bem vindo(a) ao in.Orbit | Seu app de metas!";
 let metas = [];
 
 const cadastrarMeta = async () => {
   const meta = await input({ message: "Digite sua meta:" });
 
   if (meta.trim().length == 0) {
-    console.log("ATENÇÃO: As metas não podem ser vazias!");
+    mensagem = "ATENÇÃO: As metas não podem ser vazias!";
     return;
-  }
+  };
+
   metas.push({ value: meta, checked: false });
+  mensagem = "Meta cadastrada com sucesso!";
 };
 
 const listarMetas = async () => {
@@ -25,7 +28,7 @@ const listarMetas = async () => {
   });
 
   if (respostas.length == 0) {
-    console.log("Nenhuma meta foi marcada ou desmarcada.");
+    mensagem = "Nenhuma meta foi marcada ou desmarcada.";
     return;
   }
 
@@ -43,7 +46,7 @@ const metasRealizadas = async () => {
   });
 
   if (realizadas.length == 0) {
-    console.log("Ainda não existem metas realizadas.");
+    mensagem = "Ainda não existem metas realizadas.";
     return;
   };
 
@@ -59,7 +62,7 @@ const metasAbertas = async () => {
   });
 
   if (abertas.length == 0) {
-    console.log("Você realizou todas as abertas. Parabéns!");
+    mensagem = "Você realizou todas as abertas. Parabéns!";
     return;
   };
 
@@ -69,8 +72,47 @@ const metasAbertas = async () => {
   });
 };
 
+const apagarMetas = async () => {
+  const metasDesmarcadas = metas.map((meta) => {
+    return { value: meta.value, checked: false };
+  });
+
+  const metasParaApagar = await checkbox({
+    message:
+      "Selecione (barra de espaço) as metas para apagar e tecle Enter para sair.",
+    choices: [...metasDesmarcadas],
+    instructions: false,
+  });
+
+  if (metasParaApagar.length == 0) {
+    mensagem = "Nenhuma meta foi selecionada. Nada foi alterado.";
+    return;
+  };
+
+  metasParaApagar.forEach((item) => {
+    metas = metas.filter((meta) => {
+      return meta.value != item;
+    });
+  });
+
+  mensagem = "Meta(s) apagada(s) com sucesso!";
+};
+
+const mostrarMensagem = () => {
+  console.clear();
+
+  if (mensagem != "") {
+    console.log(mensagem);
+    console.log("");
+    mensagem = "";
+  }
+};
+
 const start = async () => {
   while (true) {
+
+    mostrarMensagem();
+
     const opcao = await select({
       message: "Menu >",
       choices: [
@@ -91,6 +133,10 @@ const start = async () => {
           value: "abertas",
         },
         {
+          name: "Apagar metas",
+          value: "apagar",
+        },
+        {
           name: "Sair",
           value: "sair",
         },
@@ -109,6 +155,9 @@ const start = async () => {
         break;
       case "abertas":
         await metasAbertas();
+        break;
+      case "apagar":
+        await apagarMetas();
         break;
       case "sair":
         return;
