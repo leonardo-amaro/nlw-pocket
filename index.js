@@ -19,7 +19,7 @@ const listarMetas = async () => {
     choices: [...metas],
     instructions: false,
   });
-  
+
   metas.forEach((meta) => {
     meta.checked = false;
   });
@@ -39,7 +39,7 @@ const listarMetas = async () => {
 
 const metasRealizadas = async () => {
   const realizadas = metas.filter((meta) => {
-    return meta.checked
+    return meta.checked;
   });
 
   if (realizadas.length == 0) {
@@ -50,6 +50,22 @@ const metasRealizadas = async () => {
   await select({
     message: "Metas realizdas:",
     choices: [...realizadas],
+  });
+};
+
+const metasAbertas = async () => {
+  const abertas = metas.filter((meta) => {
+    return !meta.checked;
+  });
+
+  if (abertas.length == 0) {
+    console.log("Você realizou todas as abertas. Parabéns!");
+    return;
+  };
+
+  await select({
+    message: "Metas abertas:",
+    choices: [...abertas],
   });
 };
 
@@ -71,6 +87,10 @@ const start = async () => {
           value: "realizadas",
         },
         {
+          name: "Metas abertas",
+          value: "abertas",
+        },
+        {
           name: "Sair",
           value: "sair",
         },
@@ -86,6 +106,9 @@ const start = async () => {
         break;
       case "realizadas":
         await metasRealizadas();
+        break;
+      case "abertas":
+        await metasAbertas();
         break;
       case "sair":
         return;
