@@ -19,15 +19,15 @@ const listarMetas = async () => {
     choices: [...metas],
     instructions: false,
   });
+  
+  metas.forEach((meta) => {
+    meta.checked = false;
+  });
 
   if (respostas.length == 0) {
     console.log("Nenhuma meta foi marcada ou desmarcada.");
     return;
   }
-
-  metas.forEach((meta) => {
-    meta.checked = false;
-  });
 
   respostas.forEach((resposta) => {
     const metaAtual = metas.find((meta) => {
